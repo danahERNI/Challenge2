@@ -7,6 +7,12 @@ from fastapi import HTTPException
 
 
 def _image_url_to_base64(image_url: str):
+    excluded_domains = 'localhost'
+    allowed_filetype = ['jpg', 'png']
+    if image_url.contains(excluded_domains) and any(x in image_url for x in allowed_filetype):
+        raise HTTPException(
+            detail="Filetype is not allowed OR Image URL contains excluded domain.",
+        )
     response = requests.get(image_url, stream=True)
     encoded_image = base64.b64encode(response.content).decode()
 
